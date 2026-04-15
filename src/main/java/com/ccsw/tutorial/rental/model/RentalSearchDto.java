@@ -6,11 +6,11 @@ import java.time.LocalDate;
 
 public class RentalSearchDto {
 
-    private Long game_id;
+    private Long gameId;
 
-    private Long client_id;
+    private Long clientId;
 
-    private LocalDate rental_date;
+    private LocalDate rentalDate;
 
     private PageableRequest pageable;
 
@@ -22,27 +22,27 @@ public class RentalSearchDto {
         this.pageable = pageable;
     }
 
-    public Long getGame_id() {
-        return game_id;
+    public Long getGameId() {
+        return gameId;
     }
 
-    public void setGame_id(Long game_id) {
-        this.game_id = game_id;
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
     }
 
-    public Long getClient_id() {
-        return client_id;
+    public Long getClientId() {
+        return clientId;
     }
 
-    public void setClient_id(Long client_id) {
-        this.client_id = client_id;
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
-    public LocalDate getRental_date() {
-        return rental_date;
+    public LocalDate getRentalDate() {
+        return rentalDate;
     }
 
-    public void setRental_date(LocalDate rental_date) {
-        this.rental_date = rental_date;
+    public void setRentalDate(LocalDate rentalDate) {
+        this.rentalDate = rentalDate;
     }
 }

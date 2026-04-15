@@ -38,16 +38,16 @@ public class RentalServiceImpl implements RentalService {
 
         Specification<Rental> spec = Specification.allOf();
 
-        if (dto.getGame_id() != null) {
-            spec = spec.and(new RentalSpecification(new SearchCriteria("game.id", ":", dto.getGame_id())));
+        if (dto.getGameId() != null) {
+            spec = spec.and(new RentalSpecification(new SearchCriteria("game.id", ":", dto.getGameId())));
         }
-        if (dto.getClient_id() != null) {
-            spec = spec.and(new RentalSpecification(new SearchCriteria("client.id", ":", dto.getClient_id())));
+        if (dto.getClientId() != null) {
+            spec = spec.and(new RentalSpecification(new SearchCriteria("client.id", ":", dto.getClientId())));
         }
-        if (dto.getRental_date() != null) {
-            spec = spec.and(new RentalSpecification(new SearchCriteria("rentalDate", "<=", dto.getRental_date())));
+        if (dto.getRentalDate() != null) {
+            spec = spec.and(new RentalSpecification(new SearchCriteria("rentalDate", "<=", dto.getRentalDate())));
 
-            Specification<Rental> notReturnedYet = new RentalSpecification(new SearchCriteria("returnDate", ">=", dto.getRental_date()));
+            Specification<Rental> notReturnedYet = new RentalSpecification(new SearchCriteria("returnDate", ">=", dto.getRentalDate()));
             Specification<Rental> returnIsNull = new RentalSpecification(new SearchCriteria("returnDate", "isNull", null));
 
             spec = spec.and(notReturnedYet.or(returnIsNull));
@@ -73,7 +73,7 @@ public class RentalServiceImpl implements RentalService {
             rental = this.rentalRepository.findById(id).orElse(null);
         }
 
-        BeanUtils.copyProperties(dto, rental, "id", "game_id", "client_id", "rentalDate", "returnDate");
+        BeanUtils.copyProperties(dto, rental, "id", "game", "client", "rentalDate", "returnDate");
 
         rental.setGame(gameService.get(dto.getGame().getId()));
         rental.setClient(clientService.get(dto.getClient().getId()));
