@@ -24,9 +24,9 @@ INSERT INTO client(name) VALUES ('Cliente 4');
 INSERT INTO client(name) VALUES ('Cliente 5');
 INSERT INTO client(name) VALUES ('Cliente 6');
 
-INSERT INTO service(game, client, rentalDate, returnDate) VALUES (1,2,'2026-02-15', '2026-02-20');
-INSERT INTO service(game, client, rentalDate, returnDate) VALUES (2,2,'2026-02-15', '2026-02-20');
-INSERT INTO service(game, client, rentalDate, returnDate) VALUES (5,1,'2026-03-22', '2026-03-26');
-INSERT INTO service(game, client, rentalDate, returnDate) VALUES (4,5,'2026-04-06', '2026-04-09');
-INSERT INTO service(game, client, rentalDate, returnDate) VALUES (2,4,'2026-04-10', '2026-04-13');
-INSERT INTO service(game, client, rentalDate, returnDate) VALUES (3,3,'2026-04-11', '2026-04-14');
+INSERT INTO rental(game_id, client_id, rentalDate, returnDate) VALUES (1,2,'2026-02-15', '2026-02-20');
+INSERT INTO rental(game_id, client_id, rentalDate, returnDate) VALUES (2,2,'2026-02-15', '2026-02-20');
+INSERT INTO rental(game_id, client_id, rentalDate, returnDate) VALUES (5,1,'2026-03-22', '2026-03-26');
+INSERT INTO rental(game_id, client_id, rentalDate, returnDate) VALUES (4,5,'2026-04-06', '2026-04-09');
+INSERT INTO rental(game_id, client_id, rentalDate, returnDate) VALUES (2,4,'2026-04-10', '2026-04-13');
+INSERT INTO rental(game_id, client_id, rentalDate, returnDate) VALUES (3,3,'2026-04-11', '2026-04-14');

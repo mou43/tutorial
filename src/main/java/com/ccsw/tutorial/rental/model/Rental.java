@@ -15,12 +15,12 @@ public class Rental {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToMany
-    @JoinColumn(name = "game", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
-    @ManyToMany
-    @JoinColumn(name = "client", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
     @Column(name = "rentalDate", nullable = false)

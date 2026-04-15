@@ -3,7 +3,7 @@ package com.ccsw.tutorial.rental.model;
 import com.ccsw.tutorial.client.model.ClientDto;
 import com.ccsw.tutorial.game.model.GameDto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class RentalDto {
 
@@ -13,9 +13,9 @@ public class RentalDto {
 
     private ClientDto client;
 
-    private Date rentalDate;
+    private LocalDate rentalDate;
 
-    private Date returnDate;
+    private LocalDate returnDate;
 
     public Long getId() {
         return id;
@@ -41,19 +41,19 @@ public class RentalDto {
         this.client = client;
     }
 
-    public Date getRentalDate() {
+    public LocalDate getRentalDate() {
         return rentalDate;
     }
 
-    public void setRentalDate(Date rentalDate) {
+    public void setRentalDate(LocalDate rentalDate) {
         this.rentalDate = rentalDate;
     }
 
-    public Date getReturnDate() {
+    public LocalDate getReturnDate() {
         return returnDate;
     }
 
-    public void setReturnDate(Date returnDate) {
+    public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
     }
 }
