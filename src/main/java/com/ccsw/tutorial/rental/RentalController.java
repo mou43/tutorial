@@ -2,13 +2,14 @@ package com.ccsw.tutorial.rental;
 
 import com.ccsw.tutorial.rental.model.Rental;
 import com.ccsw.tutorial.rental.model.RentalDto;
+import com.ccsw.tutorial.rental.model.RentalSearchDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Tag(name = "Rental", description = "API of Rental")
@@ -23,12 +24,12 @@ public class RentalController {
     @Autowired
     ModelMapper mapper;
 
-    @RequestMapping(path = "", method = RequestMethod.GET)
-    public List<RentalDto> find(@RequestParam(value = "idGame", required = false) Long idGame, @RequestParam(value = "idClient", required = false) Long idClient, @RequestParam(value = "rentalDate", required = false) Date rentalDate) {
+    @RequestMapping(path = "", method = RequestMethod.POST)
+    public Page<RentalDto> findPage(@RequestBody RentalSearchDto dto) {
 
-        List<Rental> rentals = rentalService.find(idGame, idClient, rentalDate);
+        Page<Rental> page = this.rentalService.findPage(dto);
 
-        return rentals.stream().map(e -> mapper.map(e, RentalDto.class)).collect(Collectors.toList());
+        return new PageImpl<>(page.getContent().stream().map(e -> mapper.map(e, RentalDto.class)).collect(Collectors.toList()), page.getPageable(), page.getTotalElements());
     }
 
     @RequestMapping(path = { "", "/{id}" }, method = RequestMethod.PUT)

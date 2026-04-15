@@ -5,14 +5,15 @@ import com.ccsw.tutorial.common.criteria.SearchCriteria;
 import com.ccsw.tutorial.game.GameService;
 import com.ccsw.tutorial.rental.model.Rental;
 import com.ccsw.tutorial.rental.model.RentalDto;
+import com.ccsw.tutorial.rental.model.RentalSearchDto;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
-import java.util.List;
 
 @Service
 @Transactional
@@ -28,26 +29,33 @@ public class RentalServiceImpl implements RentalService {
     RentalRepository rentalRepository;
 
     @Override
-    public List<Rental> find(Long gameId, Long clientId, Date rentalDate) {
+    public Rental get(Long id) {
+        return this.rentalRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Page<Rental> findPage(RentalSearchDto dto) {
 
         Specification<Rental> spec = Specification.allOf();
 
-        if (gameId != null) {
-            spec = spec.and(new RentalSpecification(new SearchCriteria("game.id", ":", gameId)));
+        if (dto.getGame_id() != null) {
+            spec = spec.and(new RentalSpecification(new SearchCriteria("game.id", ":", dto.getGame_id())));
         }
-        if (clientId != null) {
-            spec = spec.and(new RentalSpecification(new SearchCriteria("client.id", ":", clientId)));
+        if (dto.getClient_id() != null) {
+            spec = spec.and(new RentalSpecification(new SearchCriteria("client.id", ":", dto.getClient_id())));
         }
-        if (rentalDate != null) {
-            spec = spec.and(new RentalSpecification(new SearchCriteria("rentalDate", "<=", rentalDate)));
+        if (dto.getRental_date() != null) {
+            spec = spec.and(new RentalSpecification(new SearchCriteria("rentalDate", "<=", dto.getRental_date())));
 
-            Specification<Rental> notReturnedYet = new RentalSpecification(new SearchCriteria("returnDate", ">=", rentalDate));
+            Specification<Rental> notReturnedYet = new RentalSpecification(new SearchCriteria("returnDate", ">=", dto.getRental_date()));
             Specification<Rental> returnIsNull = new RentalSpecification(new SearchCriteria("returnDate", "isNull", null));
 
             spec = spec.and(notReturnedYet.or(returnIsNull));
         }
 
-        return this.rentalRepository.findAll(spec);
+        Pageable pageable = PageRequest.of(dto.getPageable().getPageNumber(), dto.getPageable().getPageSize());
+
+        return this.rentalRepository.findAll(spec, pageable);
     }
 
     @Override
@@ -74,5 +82,15 @@ public class RentalServiceImpl implements RentalService {
 
         this.rentalRepository.save(rental);
 
+    }
+
+    @Override
+    public void delete(Long id) throws Exception {
+
+        if (this.get(id) == null) {
+            throw new Exception("Not exists");
+        }
+
+        this.rentalRepository.deleteById(id);
     }
 }

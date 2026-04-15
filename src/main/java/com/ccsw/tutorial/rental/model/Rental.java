@@ -23,10 +23,10 @@ public class Rental {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    @Column(name = "rentalDate", nullable = false)
+    @Column(name = "rental_date", nullable = false)
     private LocalDate rentalDate;
 
-    @Column(name = "returnDate", nullable = false)
+    @Column(name = "return_date", nullable = false)
     private LocalDate returnDate;
 
     public Long getId() {
