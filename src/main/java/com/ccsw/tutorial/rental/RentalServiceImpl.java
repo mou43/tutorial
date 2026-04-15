@@ -1,12 +1,16 @@
 package com.ccsw.tutorial.rental;
 
 import com.ccsw.tutorial.client.ClientRepository;
+import com.ccsw.tutorial.client.ClientService;
 import com.ccsw.tutorial.common.criteria.SearchCriteria;
 import com.ccsw.tutorial.game.GameRepository;
+import com.ccsw.tutorial.game.GameService;
 import com.ccsw.tutorial.rental.model.Rental;
 import com.ccsw.tutorial.rental.model.RentalDto;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -20,19 +24,60 @@ public class RentalServiceImpl implements RentalService {
     GameRepository gameRepository;
 
     @Autowired
+    GameService gameService;
+
+    @Autowired
+    ClientService clientService;
+
+    @Autowired
     ClientRepository clientRepository;
+
+    @Autowired
+    RentalRepository rentalRepository;
 
     @Override
     public List<Rental> find(Long gameId, Long clientId, Date rentalDate) {
 
-        RentalSpecification gameSpec = new RentalSpecification(new SearchCriteria("game.id", ":", gameId));
-        RentalSpecification clientSpec = new RentalSpecification(new SearchCriteria("client.id", ":", clientId));
+        Specification<Rental> spec = Specification.anyOf();
 
-        return List.of();
+        if (gameId != null) {
+            spec = spec.and(new RentalSpecification(new SearchCriteria("game.id", ":", gameId)));
+        }
+        if (clientId != null) {
+            spec = spec.and(new RentalSpecification(new SearchCriteria("client.id", ":", clientId)));
+        }
+        if (rentalDate != null) {
+            spec = spec.and(new RentalSpecification(new SearchCriteria("rentalDate", "<=", rentalDate)));
+
+            Specification<Rental> notReturnedYet = new RentalSpecification(new SearchCriteria("returnDate", "<=", rentalDate));
+            Specification<Rental> returnIsNull = new RentalSpecification(new SearchCriteria("returnDate", "isNull", null));
+
+            spec = spec.and(notReturnedYet.or(returnIsNull));
+        }
+
+        return this.rentalRepository.findAll(spec);
     }
 
     @Override
     public void save(Long id, RentalDto dto) {
+
+        Rental rental;
+
+        if (id == null) {
+            if (dto.getReturnDate().before(dto.getRentalDate())) {
+                throw new RuntimeException();
+            }
+            rental = new Rental();
+        } else {
+            rental = this.rentalRepository.findById(id).orElse(null);
+        }
+
+        BeanUtils.copyProperties(dto, rental, "id", "game", "client", "rentalDate", "returnDate");
+
+        rental.setGame(gameService.get(dto.getGame().getId()));
+        rental.setClient(clientService.get(dto.getClient().getId()));
+
+        this.rentalRepository.save(rental);
 
     }
 }

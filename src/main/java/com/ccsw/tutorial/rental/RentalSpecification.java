@@ -18,15 +18,24 @@ public class RentalSpecification implements Specification<Rental> {
 
     @Override
     public Predicate toPredicate(Root<Rental> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-        if (criteria.getOperation().equalsIgnoreCase(":") && criteria.getValue() != null) {
-            Path<String> path = getPath(root);
-            if (path.getJavaType() == String.class) {
-                return builder.like(path, "%" + criteria.getValue() + "%");
-            } else {
-                return builder.equal(path, criteria.getValue());
+        if (criteria.getValue() == null)
+            return null;
+
+        Path<?> path = getPath(root);
+
+        return switch (criteria.getOperation()) {
+            case ":" -> {
+                if (path.getJavaType() == String.class) {
+                    yield builder.like((Path<String>) path, "%" + criteria.getValue() + "%");
+                } else {
+                    yield builder.equal(path, criteria.getValue());
+                }
             }
-        }
-        return null;
+            case "<=" -> builder.lessThanOrEqualTo((Path<Comparable>) path, (Comparable) criteria.getValue());
+            case ">=" -> builder.greaterThanOrEqualTo((Path<Comparable>) path, (Comparable) criteria.getValue());
+            case "isNull" -> path.isNull();
+            default -> null;
+        };
     }
 
     private Path<String> getPath(Root<Rental> root) {
