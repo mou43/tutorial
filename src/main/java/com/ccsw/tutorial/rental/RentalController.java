@@ -37,4 +37,10 @@ public class RentalController {
 
         rentalService.save(id, dto);
     }
+
+    @RequestMapping(path = { "/{id}" }, method = RequestMethod.DELETE)
+    public void delete(@PathVariable(name = "id", required = true) Long id) throws Exception {
+
+        rentalService.delete(id);
+    }
 }
